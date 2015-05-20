@@ -208,6 +208,8 @@ public class QuadTree {
                 if (intersects(xmin, ymax, xmax, ymin, node.getNw()))
                     this.navigate(node.getNw(), func, xmin, ymin, xmax, ymax);
                 break;
+			default:
+				break;
         }
     }
 
@@ -263,6 +265,8 @@ public class QuadTree {
                 this.traverse(node.getSw(), func);
                 this.traverse(node.getNw(), func);
                 break;
+			default:
+				break;
         }
     }
 

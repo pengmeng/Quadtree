@@ -1,7 +1,12 @@
 
 public class QuadTreeException extends RuntimeException {
 
-    public QuadTreeException(String s) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public QuadTreeException(String s) {
         super(s);
     }
 }

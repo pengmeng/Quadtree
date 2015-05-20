@@ -27,12 +27,13 @@ public class SpatialTest {
         try {
             String textLine;
 
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
+			BufferedReader br = new BufferedReader(new FileReader(fileName));
 
             while ((textLine = br.readLine()) != null) {
                 sb.append(textLine);
                 sb.append('\n');
             }
+            br.close();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         } finally {
