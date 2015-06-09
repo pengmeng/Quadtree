@@ -47,20 +47,30 @@ public class SpatialTest {
     public void testTree(){
         _pointList = new ArrayList<Point>();
         URL classpathResource = Thread.currentThread().getContextClassLoader().getResource("");
-        String resourcePath = classpathResource.getPath()+"points.txt";
+        String resourcePath = classpathResource.getPath()+"coor-xy.txt";
+        long beginload = System.currentTimeMillis();
         LoadPointsFromFile(resourcePath);
-        assertEquals("Expecting 844 points",844,_pointList.size());
+        long endload = System.currentTimeMillis();
+        assertEquals("Expecting 81161 points", 81161, _pointList.size());
 
-        //http://spatialreference.org/ref/epsg/4326/
-        QuadTree qt = new QuadTree(-180.000000, -90.000000, 180.000000, 90.000000);
-        for(Point pt:_pointList)
-        {
+        long beginbuild = System.currentTimeMillis();
+        QuadTree qt = new QuadTree(10000.000000, 5000.000000, 30000.000000, 15000.000000);
+        for(Point pt:_pointList) {
             qt.set(pt.getX(), pt.getY(), pt.getValue());
         }
-        Point[] points = qt.searchIntersect(-84.375,27.059,-78.75,31.952 );
-        //System.out.print( Arrays.asList(points).toString());
-        assertEquals(60,points.length);
-
+        long endbuild = System.currentTimeMillis();
+        System.out.println("Sample point: " + _pointList.get(0).getX() + " " + _pointList.get(0).getY());
+        System.out.println("Loading time: " + (endload - beginload) + "ms");
+        System.out.println("Building time: " + (endbuild - beginbuild) + "ms");
+        System.out.println("Total time: " + (endbuild - beginload) + "ms");
+        
+        //using contains to test whether some points are missing
+        int count = 0;
+        for(Point pt : _pointList) {
+        	if (qt.contains(pt.getX(), pt.getY()))
+        		count++;
+        }
+        assertEquals(81161, count);
     }
 
 
