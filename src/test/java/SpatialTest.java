@@ -43,15 +43,14 @@ public class SpatialTest {
         return sb.toString().split("\n");
     }
 
-    @Test
-    public void testTree(){
+    public void singletest(String file, int expect){
         _pointList = new ArrayList<Point>();
         URL classpathResource = Thread.currentThread().getContextClassLoader().getResource("");
         String resourcePath = classpathResource.getPath()+"coor-xy.txt";
         long beginload = System.currentTimeMillis();
         LoadPointsFromFile(resourcePath);
         long endload = System.currentTimeMillis();
-        assertEquals("Expecting 81161 points", 81161, _pointList.size());
+        assertEquals("Expecting " + expect + " points", expect, _pointList.size());
 
         long beginbuild = System.currentTimeMillis();
         QuadTree qt = new QuadTree(10000.000000, 5000.000000, 30000.000000, 15000.000000);
@@ -59,19 +58,29 @@ public class SpatialTest {
             qt.set(pt.getX(), pt.getY(), pt.getValue());
         }
         long endbuild = System.currentTimeMillis();
-        System.out.println("Sample point: " + _pointList.get(0).getX() + " " + _pointList.get(0).getY());
+        System.out.println("***Test with " + file + "***");
+        System.out.println("-----Test Build-----");
         System.out.println("Loading time: " + (endload - beginload) + "ms");
         System.out.println("Building time: " + (endbuild - beginbuild) + "ms");
         System.out.println("Total time: " + (endbuild - beginload) + "ms");
-        
-        //using contains to test whether some points are missing
+
         int count = 0;
+        long totalquery = 0;
         for(Point pt : _pointList) {
-        	if (qt.contains(pt.getX(), pt.getY()))
-        		count++;
+        	long beginquery = System.nanoTime();
+        	qt.get(pt.getX(), pt.getY(), null);
+        	long endquery = System.nanoTime();
+        	totalquery += endquery - beginquery;
+        	count++;
         }
-        assertEquals(81161, count);
+        assertEquals(expect, count);
+        System.out.println("-----Test Query-----");
+        System.out.println("Total query time: " + totalquery + "ns");
+        System.out.println("Average query time: " + totalquery / count + "ns");
     }
-
-
+    
+    @Test
+    public void testTree(){
+    	singletest("coor-xy.txt", 81161);
+    }
 }
