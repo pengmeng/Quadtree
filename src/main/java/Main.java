@@ -1,4 +1,4 @@
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -6,11 +6,21 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
 
-import static org.junit.Assert.assertEquals;
 
-public class SpatialTest {
+public class Main {
 
-    public void singletest(String file, int expect) throws IOException{
+	public static void main(String[] args) {
+		try {
+//	    	singletest("coor-xy.txt", 81161);
+//	    	singletest("coor-xy48.txt", 1292668);
+//	    	singletest("coor-xy175.txt", 4632035);
+	    	singletest("coor-xy502.txt", 13146968);
+    	} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+    public static void singletest(String file, int expect) throws IOException{
         URL classpathResource = Thread.currentThread().getContextClassLoader().getResource("");
         String resourcePath = classpathResource.getPath() + file;
         FileInputStream inputStream = null;
@@ -35,6 +45,8 @@ public class SpatialTest {
                 	qt.set(x, y, o);
                 	time += System.currentTimeMillis() - begin; 
                 	count++;
+                	if (count % 1000000 == 0)
+                		System.out.println(count);
                 }
             }
             // note that Scanner suppresses exceptions
@@ -76,6 +88,8 @@ public class SpatialTest {
                 	qt.get(x, y, null);
                 	time += System.nanoTime() - begin;
                 	count++;
+                	if (count % 1000000 == 0)
+                		System.out.println(count);
                 }
             }
             // note that Scanner suppresses exceptions
@@ -98,16 +112,5 @@ public class SpatialTest {
         System.out.println("-----Test Query-----");
         System.out.println("Total query time: " + time + "ns");
         System.out.println("Average query time: " + time / count + "ns");
-    }
-    
-    @Test
-    public void testTree(){
-    	try {
-	    	singletest("coor-xy.txt", 81161);
-	    	singletest("coor-xy48.txt", 1292668);
-	    	singletest("coor-xy175.txt", 4632035);
-    	} catch (IOException e) {
-			e.printStackTrace();
-		}
     }
 }
